@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Prueba</title>
+
+	<style>
+		body{text-align:center;}
+	</style>
+</head>
+
+<body>
+	<div id="Ingresar">
+		<h1>Ingresar Datos</h1>
+		<h4>Nombre</h4>
+		<input id="ingresaNombre" type="text">
+		<h4>Correo</h4>
+		<input id="ingresaCorreo" type="text">
+		<h4>Telefono</h4>
+		<input id="ingresaTelefono" type="text"> <br><br>
+		
+		<button id="agregar">AGREGAR</button>
+		<button id="editar">EDITAR</button>
+		<button id="borrar">BORRAR</button>
+	</div>
+	
+	<div id="Buscar">
+		<h1>Buscar por nombre</h1>
+		<h4>Nombre</h4>
+		<input id="buscaNombre" type="text"> <br><br>
+		<button id="buscar">BUSCAR</button>
+		
+		<h3 id="buscaCorreo" type="text"></h3>
+		<h3 id="buscaTelefono" type="text"></h3>
+		<h3 id="buscaNom" type="text"></h3>
+	</div>
+	
+	<script type="module">
+	// Import the functions you need from the SDKs you need
+	  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.3/firebase-app.js";
+	  // TODO: Add SDKs for Firebase products that you want to use
+	  // https://firebase.google.com/docs/web/setup#available-libraries
+
+	  // Your web app's Firebase configuration
+	  const firebaseConfig = {
+		apiKey: "AIzaSyCnCaAVyKQw_2Jrr-dXmUf0B4qoCWWKBus",
+  		authDomain: "kiwisolverpro.firebaseapp.com",
+  		databaseURL: "https://kiwisolverpro-default-rtdb.firebaseio.com",
+  		projectId: "kiwisolverpro",
+  		storageBucket: "kiwisolverpro.appspot.com",
+  		messagingSenderId: "614416597976",
+  		appId: "1:614416597976:web:62d7adf9d4f9e040c368ad",
+  		measurementId: "G-QML6C5C7B8"
+	  };
+
+	  // Initialize Firebase
+	  const app = initializeApp(firebaseConfig);
+	  
+	  import {getDatabase,set,get,update,remove,ref,child}
+	  from "https://www.gstatic.com/firebasejs/9.6.3/firebase-database.js"
+	  
+	  const db=getDatabase();
+	  
+	  var ingresaNombre=document.querySelector("#ingresaNombre");
+	  var ingresaCorreo=document.querySelector("#ingresaCorreo");
+	  var ingresaTelefono=document.querySelector("#ingresaTelefono");
+	  var buscaCorreo=document.querySelector("#buscaCorreo");
+	  var buscaTelefono=document.querySelector("#buscaTelefono");
+	  var buscaNom=document.querySelector("#buscaNom");
+	  
+	  var botonAgregar=document.querySelector("#agregar");
+	  var botonEditar=document.querySelector("#editar");
+	  var botonBorrar=document.querySelector("#borrar");
+	  var botonBuscar=document.querySelector("#buscar");
+	  
+	  function AgregarDatos(){
+		set(ref(db, "Usuarios/"+ ingresaNombre.value),{
+                Nombre: ingresaNombre.value,
+                Correo: ingresaCorreo.value,
+                Numero: ingresaTelefono.value
+            })
+            .then(()=>{
+                alert("Usuario guardado correctamente");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+	  }
+	  
+	  function EditarDatos(){
+		update(ref(db, "Usuarios/"+ ingresaNombre.value),{
+                Correo: ingresaCorreo.value,
+                Numero: ingresaTelefono.value
+            })
+            .then(()=>{
+                alert("Informacion Actualizada");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+	  }
+	  
+	  function BorrarDatos(){
+		remove(ref(db, "Usuarios/"+ ingresaNombre.value))
+            .then(()=>{
+                alert("Usuario eliminado");
+            })
+            .catch((error)=>{
+                alert(error);
+            });
+	  }
+	  
+	  function BuscarDatos(){
+		const dbref = ref(db);
+		get(child(dbref, "Usuarios/" + buscaNombre.value))
+            .then((snapshot)=>{
+                if(snapshot.exists()){
+                    buscaCorreo.innerHTML = "Correo: " + snapshot.val().Correo;
+                    buscaTelefono.innerHTML = "Numero: " + snapshot.val().Numero;
+                } else {
+                    alert("No data found");
+                }
+            })
+            .catch((error)=>{
+                alert(error)
+            })
+	  }
+
+	  const dbref = ref(db);
+	  get(child(dbref, "Usuarios/" + "Tarjeta"))
+          .then((snapshot)=>{
+        	  if(snapshot.exists()){
+        	  		buscaNom.innerHTML = "Usuario: " + snapshot.val().Nombre;
+                	buscaCorreo.innerHTML = "Correo: " + snapshot.val().Correo;
+                    buscaTelefono.innerHTML = "Numero: " + snapshot.val().Numero;
+                } else {
+                    alert("No data found");
+                }
+            })
+            .catch((error)=>{
+                alert(error)
+            })
+	  
+	  botonAgregar.addEventListener("click",AgregarDatos);
+	  botonEditar.addEventListener("click",EditarDatos);
+	  botonBorrar.addEventListener("click",BorrarDatos);
+	  botonBuscar.addEventListener("click",BuscarDatos);
+	  
+	</script>
+	
+</body>
+</html>
